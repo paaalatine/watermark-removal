@@ -15,6 +15,7 @@ templates_dir = images_dir + "templates/"
 for item_filename in os.listdir(items_dir):
 
 	original_img = cv2.imread(items_dir + item_filename)
+	print(item_filename)
 	img_color = cv2.cvtColor(original_img, color)
 	sharp_img = cv2.filter2D(img_color, -1, kernel_sharpening)
 
@@ -28,7 +29,7 @@ for item_filename in os.listdir(items_dir):
 		template = cv2.imread(templates_dir + template_filename)
 		template_color = cv2.cvtColor(template, color)
 
-		for i in np.arange(2.0, 0.5, -0.03):
+		for i in np.arange(4.0, 0.5, -0.03):
 			resized_template = cv2.resize(template_color, (0,0), fx=i, fy=i)
 			sharp_template = cv2.filter2D(resized_template, -1, kernel_sharpening)
 
@@ -43,7 +44,7 @@ for item_filename in os.listdir(items_dir):
 
 			min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
-			if max_val < 0.4:
+			if max_val < 0.29:
 				continue
 
 			top_left = max_loc
@@ -60,5 +61,6 @@ for item_filename in os.listdir(items_dir):
 			saved = True
 			break
 
-	if not saved:
-		cv2.imwrite(results_dir + "bad/" + item_filename, original_img)
+	# if not saved:
+	# 	print(item_filename)
+	# 	cv2.imwrite(results_dir + "bad/" + item_filename, original_img)
