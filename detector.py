@@ -4,18 +4,19 @@ import os
 
 color = cv2.COLOR_BGR2GRAY
 
+shop = "onliner.by"
+
 kernel_sharpening = np.array([[-1,-1,-1], [-1, 9,-1], [-1,-1,-1]])
 
 images_dir = "/home/sonya/zoomos/watermark-removal/images/";
 
 results_dir = images_dir + "results/"
-items_dir = images_dir + "items/"
-templates_dir = images_dir + "templates/"
+items_dir = images_dir + "items/" + shop + "/"
+templates_dir = images_dir + "templates/" + shop + "/"
 
 for item_filename in os.listdir(items_dir):
 
 	original_img = cv2.imread(items_dir + item_filename)
-	print(item_filename)
 	img_color = cv2.cvtColor(original_img, color)
 	sharp_img = cv2.filter2D(img_color, -1, kernel_sharpening)
 
@@ -44,7 +45,13 @@ for item_filename in os.listdir(items_dir):
 
 			min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
 
-			if max_val < 0.29:
+			if i >= 3 and max_val < 0.48:
+				continue
+
+			if i >= 2 and i < 3 and max_val < 0.42:
+				continue
+
+			if i < 2 and max_val < 0.31:
 				continue
 
 			top_left = max_loc
@@ -61,6 +68,6 @@ for item_filename in os.listdir(items_dir):
 			saved = True
 			break
 
-	# if not saved:
-	# 	print(item_filename)
-	# 	cv2.imwrite(results_dir + "bad/" + item_filename, original_img)
+	if not saved:
+		print("undefined " + item_filename)
+		cv2.imwrite(results_dir + "bad/" + item_filename, original_img)
