@@ -35,6 +35,7 @@ def inpaint(img):
 
 def main():
     for item_filename in os.listdir(items_dir):
+        print(item_filename + " processing..")
         img = cv2.imread(items_dir + item_filename)
         inpainted_img = inpaint(img)     
         if inpainted_img.size == 0:
